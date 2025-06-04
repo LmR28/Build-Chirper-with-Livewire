@@ -1,3 +1,8 @@
 <div>
-    {{-- Knowing others is intelligence; knowing yourself is true wisdom. --}}
+    @foreach ($chirps as $chirp)
+        <div class="border p-4 mb-2 rounded">
+            <strong>{{ $chirp->user->name }}</strong>
+            <p>{{ $chirp->message }}</p>
+        </div>
+    @endforeach
 </div>
