@@ -24,7 +24,7 @@ class CreateChirp extends Component
         ]);
 
         $this->reset('message');
-
+        session()->flash('message', '¡Chirp creado con éxito!');
         $this->dispatch('chirpCreated');
     }
 

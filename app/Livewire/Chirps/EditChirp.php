@@ -32,7 +32,15 @@ class EditChirp extends Component
             'message' => $this->message,
         ]);
 
-        $this->dispatch('chirpUpdated');
+        $this->dispatch('chirpUpdated')->to('chirps.chirp-list');
+        $this->dispatch('cancelEdit')->to('chirps.chirp-list');
+
+    }
+
+    public function cancel()
+    {
+        $this->dispatch('cancelEdit')->to('chirps.chirp-list');
+
     }
 
     public function render()
