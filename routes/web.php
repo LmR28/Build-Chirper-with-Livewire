@@ -18,8 +18,11 @@ Route::view('/profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-require __DIR__.'/auth.php';
+
 
 Route::get('/chirps', ChirpList::class)
     ->middleware(['auth'])
     ->name('chirps.index');
+
+ 
+    require __DIR__.'/auth.php';

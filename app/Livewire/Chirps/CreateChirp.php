@@ -3,29 +3,29 @@
 namespace App\Livewire\Chirps;
 
 use Livewire\Component;
+use Livewire\Attributes\Validate;
 use App\Models\Chirp;
 use Illuminate\Support\Facades\Auth;
 
 class CreateChirp extends Component
 {
+    #[Validate('required|string|max:255')]
     public string $message = '';
 
-    protected $rules = [
-        'message' => 'required|string|max:255',
-    ];
+    public ?string $successMessage = null;
 
     public function save()
     {
-        $this->validate();
+        $validated = $this->validate();
 
         Chirp::create([
             'user_id' => Auth::id(),
-            'message' => $this->message,
+            'message' => $validated['message'],
         ]);
 
-        $this->reset('message');
-        session()->flash('message', '¡Chirp creado con éxito!');
-        $this->dispatch('chirpCreated');
+        $this->reset('message'); // Limpia el textarea
+        $this->successMessage = '¡Chirp Creado con éxito!';
+        $this->dispatch('chirp-created');
     }
 
     public function render()

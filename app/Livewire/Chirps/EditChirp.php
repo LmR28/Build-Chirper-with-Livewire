@@ -11,6 +11,11 @@ class EditChirp extends Component
     public Chirp $chirp;
     public string $message;
 
+    protected $messages = [
+    'message.required' => 'El mensaje no puede editar si esta vacío.',
+    'message.max' => 'El mensaje no puede superar más de 255 caracteres.',
+
+    ];
     protected $rules = [
         'message' => 'required|string|max:255',
     ];
@@ -31,9 +36,10 @@ class EditChirp extends Component
         $this->chirp->update([
             'message' => $this->message,
         ]);
-
+        session()->flash('success', '¡Chirp editado con éxito!');
         $this->dispatch('chirpUpdated')->to('chirps.chirp-list');
         $this->dispatch('cancelEdit')->to('chirps.chirp-list');
+       
 
     }
 

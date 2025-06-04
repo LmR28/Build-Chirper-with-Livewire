@@ -1,21 +1,35 @@
 <?php
 
+
 namespace App\Livewire\Chirps;
 
 use Livewire\Component;
+use Livewire\Attributes\On;
 use App\Models\Chirp;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class ChirpList extends Component
 {
+    public Collection $chirps;
     public $editingChirpId = null;
+    public ?string $successMessage = null;
 
-    protected $listeners = [
-        'chirpUpdated' => '$refresh',
-        'chirpCreated' => '$refresh',
-        'chirpDeleted' => '$refresh',
-        'cancelEdit' => 'cancelEdit',
-    ];
+    public function mount(): void
+    {
+        $this->getChirps();
+    }
+
+    #[On('chirp-created')]
+    #[On('chirp-updated')]
+    #[On('chirp-deleted')]
+    public function getChirps(): void
+    {
+        $this->chirps = Chirp::with('user')
+            ->where('user_id', Auth::id())
+            ->latest('updated_at')
+            ->get();
+    }
 
     public function edit($chirpId)
     {
@@ -37,14 +51,16 @@ class ChirpList extends Component
 
         $chirp->delete();
 
-        $this->dispatch('chirpDeleted');
+        $this->successMessage = '¡Chirp eliminado!';
+        $this->dispatch('chirp-deleted');
     }
 
     public function render()
     {
         return view('livewire.chirps.chirp-list', [
-            'chirps' => Chirp::with('user')->where('user_id', Auth::id())->latest('updated_at')->get(),
+            'chirps' => $this->chirps,
             'editingChirpId' => $this->editingChirpId,
+            'successMessage' => $this->successMessage,
         ]);
     }
 }
